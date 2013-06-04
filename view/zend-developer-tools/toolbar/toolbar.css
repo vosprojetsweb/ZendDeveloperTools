@@ -146,6 +146,8 @@
     float: left;
     display: block;
     white-space: nowrap;
+    max-width: 600px;
+    height: auto;
 }
 
 .zdt-toolbar-info .zdt-detail-pre {

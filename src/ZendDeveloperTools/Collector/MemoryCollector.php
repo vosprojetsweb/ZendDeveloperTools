@@ -44,6 +44,7 @@ class MemoryCollector extends AbstractCollector implements EventCollectorInterfa
 
         $this->data['memory'] = memory_get_peak_usage(true);
         $this->data['end']    = memory_get_usage(true);
+        $this->data['memory_limit'] = ini_get('memory_limit');
     }
 
     /**
@@ -75,6 +76,17 @@ class MemoryCollector extends AbstractCollector implements EventCollectorInterfa
     public function getMemory()
     {
         return $this->data['memory'];
+    }
+
+    /**
+     * Returns the Maximum amount of memory a script may consume
+     * cf. http://php.net/memory-limit
+     *
+     * @return integer Memory Limit
+     */
+    public function getMemoryLimit()
+    {
+        return $this->data['memory_limit'];
     }
 
     /**

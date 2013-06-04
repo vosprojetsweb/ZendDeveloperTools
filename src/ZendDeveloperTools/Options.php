@@ -34,6 +34,7 @@ class Options extends AbstractOptions
             'config'    => 'ZendDeveloperTools\ConfigCollector',
             'memory'    => 'ZendDeveloperTools\MemoryCollector',
             'time'      => 'ZendDeveloperTools\TimeCollector',
+            'phpinfo'      => 'ZendDeveloperTools\PhpInfoCollector',
         ),
     );
 
@@ -51,6 +52,7 @@ class Options extends AbstractOptions
             'memory'  => 'zend-developer-tools/toolbar/memory',
             'config'  => 'zend-developer-tools/toolbar/config',
             'db'      => 'zend-developer-tools/toolbar/db',
+            'phpinfo' => 'zend-developer-tools/toolbar/php-info',
         ),
     );
 
