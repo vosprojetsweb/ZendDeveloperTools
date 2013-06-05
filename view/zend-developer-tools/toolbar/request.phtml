@@ -46,20 +46,13 @@ $color = ($this->collector->getStatusCode() < 400)
 
         <?php echo $this->ZendDeveloperToolsDetailArray('Templates', $this->collector->getTemplateNames()); ?>
 
+        <div class="zdt-toolbar-info zdt-toolbar-info-heading">Variables</div>
 
-        <span class="zdt-toolbar-info">
-            <span class="zdt-detail-label">Variables</span>
-            <span class="zdt-detail-value">
-                <span class="zdt-detail-pre">
-                <?php
-                foreach ($this->collector->getPredefinedVariables() as $groupName => $variables) {
-                    echo '<b>', $groupName, '</b><br/>';
-                    echo var_export($variables, true);
-                }
-                ?>
-                </span>
+        <?php foreach ($this->collector->getPredefinedVariables() as $groupName => $variables) { ?>
+            <span class="zdt-toolbar-info">
+                <span class="zdt-detail-label"><?php echo $groupName?></span>
+                <span class="zdt-detail-value zdt-detail-pre"><?php echo var_export($variables, true); ?></span>
             </span>
-        </span>
-
+        <?php } ?>
     </div>
 </div>
