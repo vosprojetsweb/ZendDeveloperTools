@@ -9,7 +9,7 @@
         </span>
         <span class="zdt-toolbar-info">
             <span class="zdt-detail-pre">
-<?php var_dump($this->collector->getConfig()); ?>
+                <?php echo $this->escapeHtml(var_export($this->collector->getConfig(), true)); ?>
             </span>
         </span>
     </div>
@@ -25,7 +25,7 @@
         </span>
         <span class="zdt-toolbar-info">
             <span class="zdt-detail-pre">
-<?php var_dump($this->collector->getApplicationConfig()); ?>
+                <?php echo $this->escapeHtml(var_export($this->collector->getApplicationConfig(), true)); ?>
             </span>
         </span>
     </div>
