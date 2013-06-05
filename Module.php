@@ -18,7 +18,9 @@ use Zend\ModuleManager\Feature\ServiceProviderInterface;
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ViewHelperProviderInterface;
-use BjyProfiler\Db\Adapter\ProfilingAdapter;
+use Zend\Db\Adapter\Profiler\ProfilerAwareInterface;
+use BjyProfiler\Db\Profiler\Profiler as BjyProfiler;
+use BjyProfiler\Db\Adapter\ProfilingAdapter as BjyAdapter;
 
 class Module implements
     InitProviderInterface,
@@ -194,18 +196,18 @@ class Module implements
                     return new Listener\ProfilerListener($sm, $sm->get('ZendDeveloperTools\Config'));
                 },
                 'ZendDeveloperTools\DbCollector' => function ($sm) {
-                    $p  = false;
                     $db = new Collector\DbCollector();
+
+                    $adapter = null;
 
                     if ($sm->has('Zend\Db\Adapter\Adapter')) {
                         $adapter = $sm->get('Zend\Db\Adapter\Adapter');
-                        if ($adapter instanceof ProfilingAdapter) {
-                            $p = true;
-                            $db->setProfiler($adapter->getProfiler());
-                        }
-                    } elseif (!$p && $sm->has('Zend\Db\Adapter\ProfilingAdapter')) {
+                    } elseif ($sm->has('Zend\Db\Adapter\ProfilingAdapter')) {
                         $adapter = $sm->get('Zend\Db\Adapter\ProfilingAdapter');
-                        if ($adapter instanceof ProfilingAdapter) {
+                    }
+
+                    if ($adapter instanceof ProfilerAwareInterface || $adapter instanceof BjyAdapter) {
+                        if ($adapter->getProfiler() instanceof BjyProfiler) {
                             $db->setProfiler($adapter->getProfiler());
                         }
                     }
