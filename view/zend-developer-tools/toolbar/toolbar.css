@@ -217,7 +217,8 @@
 }
 
 #zend-developer-toolbar .zdt-toolbar-entry .zdt-toolbar-detail,
-#zend-developer-toolbar .zdt-toolbar-entry .zdt-toolbar-info {
+#zend-developer-toolbar .zdt-toolbar-entry .zdt-toolbar-info
+{
     font-size: 11px;
     max-height: 400px;
     max-width: 700px;
@@ -225,15 +226,23 @@
 }
 
 #zend-developer-toolbar .zdt-toolbar-info .zdt-detail-value pre {
-    max-height: 350px;
-    max-width: 650px;
-    overflow-y: scroll;
-    overflow-x: scroll;
     display: inline-block;
     white-space: pre;
     word-break: keep-all;
-    word-wrap: normal;
+    word-wrap: break-word;
+    background: #333;
+    font: normal 10px monospace;
+    border: none;
+    color: #eee; 
+    margin: 0;
+    padding: 0;
 }
+
+
+#zend-developer-toolbar .zdt-toolbar-entry .zdt-toolbar-scroll-pane {
+    overflow: auto;
+}
+
 
 @media screen and (max-width: 780px) {
     .zdt-toolbar-preview .zdt-toolbar-extra-info {
