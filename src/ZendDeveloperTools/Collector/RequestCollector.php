@@ -59,6 +59,13 @@ class RequestCollector extends AbstractCollector
             'route'      => ($match === null) ? 'N/A' : $match->getMatchedRouteName(),
             'action'     => ($match === null) ? 'N/A' : $match->getParam('action', 'N/A'),
             'controller' => ($match === null) ? 'N/A' : $match->getParam('controller', 'N/A'),
+            'predefined_variables'  => array(
+                '_ENV'    => $_ENV,
+                '_GET'    => $_GET,
+                '_POST'   => $_POST,
+                '_COOKIE' => $_COOKIE,
+                '_SERVER' => $_SERVER
+            ),
         );
     }
 
@@ -144,5 +151,11 @@ class RequestCollector extends AbstractCollector
     public function getTemplateNames()
     {
         return $this->data['templates'];
+    }
+
+
+    public function getPredefinedVariables()
+    {
+        return $this->data['predefined_variables'];
     }
 }

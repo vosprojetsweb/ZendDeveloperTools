@@ -16,7 +16,7 @@ $color = ($this->collector->getStatusCode() < 400)
             </span>
         </span>
     </div>
-    <div class="zdt-toolbar-detail">
+    <div class="zdt-toolbar-detail zdt-toolbar-scroll-pane">
         <span class="zdt-toolbar-info zdt-toolbar-info-redundant">
             <span class="zdt-detail-label">Status code</span>
             <span class="zdt-detail-value zdt-toolbar-bold zdt-toolbar-color-<?php echo $color; ?>">
@@ -42,5 +42,14 @@ $color = ($this->collector->getStatusCode() < 400)
             <span class="zdt-detail-value"><?php echo $this->collector->getRouteName(); ?></span>
         </span>
         <?php echo $this->ZendDeveloperToolsDetailArray('Templates', $this->collector->getTemplateNames()); ?>
+
+
+        <div class="zdt-toolbar-info zdt-toolbar-info-heading">Predefined Variables</div>
+        <?php foreach ($this->collector->getPredefinedVariables() as $groupName => $variables) { ?>
+            <span class="zdt-toolbar-info">
+                <span class="zdt-detail-label"><?php echo $groupName?></span>
+                <span class="zdt-detail-value"><?php Zend\Debug\Debug::dump($variables); ?></span>
+            </span>
+        <?php } ?>
     </div>
 </div>
