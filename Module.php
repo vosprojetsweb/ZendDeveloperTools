@@ -19,6 +19,7 @@ use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ViewHelperProviderInterface;
 use BjyProfiler\Db\Adapter\ProfilingAdapter;
+use BjyProfiler\Db\Profiler\Profiler as BjyProfiler;
 
 class Module implements
     InitProviderInterface,
@@ -199,7 +200,7 @@ class Module implements
 
                     if ($sm->has('Zend\Db\Adapter\Adapter')) {
                         $adapter = $sm->get('Zend\Db\Adapter\Adapter');
-                        if ($adapter instanceof ProfilingAdapter) {
+                        if ($adapter instanceof ProfilingAdapter || $adapter->getProfiler() instanceof BjyProfiler) {
                             $p = true;
                             $db->setProfiler($adapter->getProfiler());
                         }
