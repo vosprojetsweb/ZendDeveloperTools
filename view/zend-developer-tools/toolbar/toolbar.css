@@ -1,3 +1,7 @@
+body {
+    margin-bottom: 45px;
+}
+
 #zend-developer-toolbar {
     left: 0;
     bottom: 0;

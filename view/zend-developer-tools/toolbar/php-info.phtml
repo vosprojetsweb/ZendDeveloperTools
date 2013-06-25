@@ -7,7 +7,6 @@
     </div>
     <div class="zdt-toolbar-detail">
         <span class="zdt-toolbar-info">
-            <span class="zdt-detail-label">Errors</span>
             <span class="zdt-detail-value">
                 <table>
                     <thead>
@@ -17,7 +16,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($collector->getErrorsInfo() as $directive => $details): ?>
+                        <?php foreach ($collector->getMainDirectives() as $directive => $details): ?>
                             <tr>
                                 <td><?php echo $directive?></td>
                                 <td><?php echo $details['local_value']?></td>
