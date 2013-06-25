@@ -5,4 +5,9 @@ return array(
             'zenddevelopertools' => __DIR__ . '/../view',
         ),
     ),
+    'controllers' => array(
+        'invokables' => array(
+            'DeveloperToolsController' => 'ZendDeveloperTools\Controller\DeveloperToolsController',
+        )
+    ),
 );

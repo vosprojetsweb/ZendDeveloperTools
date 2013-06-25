@@ -35,6 +35,8 @@ class Memory extends AbstractHelper
      */
     public function __invoke($size, $precision = 2)
     {
+        $size = $this->returnBytes($size);
+
         if ($size < 1024) {
             return sprintf('%d B', $size);
         } elseif (($size / 1024) < 1024) {
@@ -42,5 +44,28 @@ class Memory extends AbstractHelper
         } else {
             return sprintf('%.' . $precision . 'f Mb', $size / 1024 / 1024);
         }
+    }
+
+    /**
+     * Convert shorthand byte values
+     * cf. http://fr2.php.net/manual/en/faq.using.php#faq.using.shorthandbytes
+     *
+     * @param string|integer $val
+     * @return integer memory in bytes
+     */
+    private function returnBytes($val) {
+        $val = trim($val);
+        $last = strtolower($val[strlen($val)-1]);
+
+        switch($last) {
+            case 'g':
+                $val *= 1024;
+            case 'm':
+                $val *= 1024;
+            case 'k':
+                $val *= 1024;
+        }
+
+        return $val;
     }
 }

@@ -1,3 +1,7 @@
+body {
+    margin-bottom: 45px;
+}
+
 #zend-developer-toolbar {
     left: 0;
     bottom: 0;
@@ -146,6 +150,8 @@
     float: left;
     display: block;
     white-space: nowrap;
+    max-width: 600px;
+    height: auto;
 }
 
 .zdt-toolbar-info .zdt-detail-pre {

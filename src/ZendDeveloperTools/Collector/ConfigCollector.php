@@ -35,6 +35,17 @@ class ConfigCollector implements CollectorInterface, Serializable
     protected $applicationConfig;
 
     /**
+     * @var array|null
+     */
+    protected $phpConfig = null;
+
+    /**
+     * @var array|null
+     */
+    protected $phpIniFiles = null;
+
+
+    /**
      * @inheritdoc
      */
     public function getName()
@@ -68,6 +79,20 @@ class ConfigCollector implements CollectorInterface, Serializable
         if ($serviceLocator->has('ApplicationConfig')) {
             $this->applicationConfig = $this->makeArraySerializable($serviceLocator->get('ApplicationConfig'));
         }
+
+        if ($serviceLocator->has('ZendDeveloperTools\Config') === true) {
+            $config = $serviceLocator->get('ZendDeveloperTools\Config')->getCollectorOptions('config');
+
+            $this->phpConfig = array();
+            foreach ($config['php_directives'] as $name) {
+                $this->phpConfig[] = array(
+                    'directive' => $name,
+                    'value' => ini_get($name)
+                );
+            }
+        }
+
+        $this->phpIniFiles = array(php_ini_loaded_file()) + explode(',', php_ini_scanned_files());
     }
 
     /**
@@ -87,11 +112,42 @@ class ConfigCollector implements CollectorInterface, Serializable
     }
 
     /**
+     *
+     * @return array|null
+     */
+    public function getPhpConfig()
+    {
+        return $this->phpConfig;
+    }
+
+    public function hasPhpConfig()
+    {
+        return $this->phpConfig !== null;
+    }
+
+    /**
+     * Rerturns the list of all PHP ini files parsed
+     * @return array
+     */
+    public function getPhpIniFilesParsed()
+    {
+        return $this->phpIniFiles;
+    }
+
+
+    /**
      * {@inheritDoc}
      */
     public function serialize()
     {
-        return serialize(array('config' => $this->config, 'applicationConfig' => $this->applicationConfig));
+        return serialize(
+            array(
+                'config' => $this->config,
+                'applicationConfig' => $this->applicationConfig,
+                'phpConfig' => $this->phpConfig,
+                'phpIniFiles' => $this->phpIniFiles
+            )
+        );
     }
 
     /**
@@ -102,6 +158,8 @@ class ConfigCollector implements CollectorInterface, Serializable
         $data                    = unserialize($serialized);
         $this->config            = $data['config'];
         $this->applicationConfig = $data['applicationConfig'];
+        $this->phpConfig         = $data['phpConfig'];
+        $this->phpIniFiles         = $data['phpIniFiles'];
     }
 
     /**

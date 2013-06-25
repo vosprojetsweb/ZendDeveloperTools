@@ -153,7 +153,10 @@ class RequestCollector extends AbstractCollector
         return $this->data['templates'];
     }
 
-
+    /**
+     * Returns all the predefined variables from EGPCS
+     * @return array
+     */
     public function getPredefinedVariables()
     {
         return $this->data['predefined_variables'];

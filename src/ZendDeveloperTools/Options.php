@@ -35,6 +35,20 @@ class Options extends AbstractOptions
             'memory'    => 'ZendDeveloperTools\MemoryCollector',
             'time'      => 'ZendDeveloperTools\TimeCollector',
         ),
+        'collectors_options' => array(
+            'config' => array(
+                'php_directives' => array(
+                    'memory_limit',
+                    'log_errors',
+                    'error_log',
+                    'display_errors',
+                    'display_startup_errors',
+                    'error_reporting',
+                    'expose_php',
+                    'date.timezone'
+                )
+            )
+        )
     );
 
     /**
@@ -197,6 +211,18 @@ class Options extends AbstractOptions
     public function getCollectors()
     {
         return $this->profiler['collectors'];
+    }
+
+
+    /**
+     *
+     * @param array
+     */
+    public function getCollectorOptions($name)
+    {
+        return isset($this->profiler['collectors_options'][$name]) ?
+            $this->profiler['collectors_options'][$name] :
+            array();
     }
 
     /**

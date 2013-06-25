@@ -5,7 +5,13 @@
             <?php echo $this->ZendDeveloperToolsMemory($this->collector->getMemory()); ?>
         </span>
     </div>
-    <div class="zdt-toolbar-detail<?php echo ($this->collector->hasEventMemory()) ? '' : ' zdt-toolbar-detail-redundant' ;?>">
+    <div class="zdt-toolbar-detail">
+        <span class="zdt-toolbar-info">
+            <span class="zdt-detail-label">Memory Limit</span>
+            <span class="zdt-detail-value zdt-detail-value-right">
+                <?php echo $this->ZendDeveloperToolsMemory($this->collector->getMemoryLimit()); ?>
+            </span>
+        </span>
         <?php
         if ($this->collector->hasEventMemory()) {
             foreach ($this->collector->getApplicationEventMemory() as $key => $value) {
