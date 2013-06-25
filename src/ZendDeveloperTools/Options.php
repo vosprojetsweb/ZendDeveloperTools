@@ -38,10 +38,14 @@ class Options extends AbstractOptions
         'collectors_options' => array(
             'config' => array(
                 'php_directives' => array(
-                    'memory_limit' => '8M',
-                    'error_log' => null,
-                    'display_errors' => true,
-                    'expose_php' => false
+                    'memory_limit',
+                    'log_errors',
+                    'error_log',
+                    'display_errors',
+                    'display_startup_errors',
+                    'error_reporting',
+                    'expose_php',
+                    'date.timezone'
                 )
             )
         )

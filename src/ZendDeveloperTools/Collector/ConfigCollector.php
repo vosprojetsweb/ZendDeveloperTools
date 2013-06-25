@@ -39,6 +39,11 @@ class ConfigCollector implements CollectorInterface, Serializable
      */
     protected $phpConfig = null;
 
+    /**
+     * @var array|null
+     */
+    protected $phpIniFiles = null;
+
 
     /**
      * @inheritdoc
@@ -79,14 +84,15 @@ class ConfigCollector implements CollectorInterface, Serializable
             $config = $serviceLocator->get('ZendDeveloperTools\Config')->getCollectorOptions('config');
 
             $this->phpConfig = array();
-            foreach ($config['php_directives'] as $name => $value) {
+            foreach ($config['php_directives'] as $name) {
                 $this->phpConfig[] = array(
                     'directive' => $name,
-                    'expected_value' => $value,
                     'value' => ini_get($name)
                 );
             }
         }
+
+        $this->phpIniFiles = array(php_ini_loaded_file()) + explode(',', php_ini_scanned_files());
     }
 
     /**
@@ -119,6 +125,15 @@ class ConfigCollector implements CollectorInterface, Serializable
         return $this->phpConfig !== null;
     }
 
+    /**
+     * Rerturns the list of all PHP ini files parsed
+     * @return array
+     */
+    public function getPhpIniFilesParsed()
+    {
+        return $this->phpIniFiles;
+    }
+
 
     /**
      * {@inheritDoc}
@@ -129,7 +144,8 @@ class ConfigCollector implements CollectorInterface, Serializable
             array(
                 'config' => $this->config,
                 'applicationConfig' => $this->applicationConfig,
-                'phpConfig' => $this->phpConfig
+                'phpConfig' => $this->phpConfig,
+                'phpIniFiles' => $this->phpIniFiles
             )
         );
     }
@@ -143,6 +159,7 @@ class ConfigCollector implements CollectorInterface, Serializable
         $this->config            = $data['config'];
         $this->applicationConfig = $data['applicationConfig'];
         $this->phpConfig         = $data['phpConfig'];
+        $this->phpIniFiles         = $data['phpIniFiles'];
     }
 
     /**

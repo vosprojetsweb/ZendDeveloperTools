@@ -9,20 +9,28 @@
         </span>
 
         <span class="zdt-toolbar-info">
+            <div class="zdt-detail-pre">
+            <div class="zdt-toolbar-info-heading">PHP Ini Files Parsed</div>
+            <?php
+            foreach ($collector->getPhpIniFilesParsed() as $filename){
+                echo $filename, '<br/>';
+            }
+            ?>
             <?php
             if ($collector->hasPhpConfig() === true): ?>
+                <div class="zdt-toolbar-info-heading">PHP Config</div>
                 <table>
                     <thead>
                         <tr>
                             <th>Directive</th>
-                            <th>Value (expected)</th>
+                            <th>Value</th>
                         </tr>
                     </thead>
                     <tbody>
                     <?php foreach ($collector->getPhpConfig() as $config): ?>
                         <tr>
                             <td><?php echo $this->escapeHtml($config['directive'])?></td>
-                            <td><?php echo $this->escapeHtml($config['value'])?> (<?php echo $this->escapeHtml($config['expected_value'])?>)</td>
+                            <td><?php echo $this->escapeHtml($config['value'])?></td>
                         </tr>
                         <?php
                     endforeach;
@@ -30,19 +38,13 @@
                 </tbody>
             </table>
             <?php endif; ?>
-        </span>
 
-        <span class="zdt-toolbar-info">
-            <span class="zdt-detail-pre">
-                <?php echo $this->escapeHtml(var_export($this->collector->getConfig(), true)); ?>
-            </span>
-        </span>
+            <div class="zdt-toolbar-info-heading">Config</div>
+            <div><?php echo $this->escapeHtml(var_export($this->collector->getConfig(), true)); ?></div>
 
-        <span class="zdt-toolbar-info">
-            <span class="zdt-detail-pre">
-                <?php echo $this->escapeHtml(var_export($this->collector->getApplicationConfig(), true)); ?>
-            </span>
-        </span>
+            <div class="zdt-toolbar-info-heading">App Config</div>
+            <div><?php echo $this->escapeHtml(var_export($this->collector->getApplicationConfig(), true)); ?></div>
+        </div>
     </div>
 </div>
 
