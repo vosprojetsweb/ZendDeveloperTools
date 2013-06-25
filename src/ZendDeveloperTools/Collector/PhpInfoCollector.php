@@ -49,10 +49,12 @@ class PhpInfoCollector extends AbstractCollector
         $coreConfiguration = ini_get_all('core');
 
         //All configuration variables about error
-        $this->data['errors'] = array();
+        $this->data['mainDirectives'] = array();
         foreach ($coreConfiguration as $name => $details) {
             if (strpos($name, 'error') !== false) {
-                $this->data['errors'][$name] = $details;
+                $this->data['mainDirectives'][$name] = $details;
+            } else if (in_array($name, array('date.timezone'), true) === true) {
+                $this->data['mainDirectives'][$name] = $details;
             }
         }
 
@@ -64,18 +66,12 @@ class PhpInfoCollector extends AbstractCollector
         foreach ($expectedConfiguration as $name => $expectedValue) {
             $details = $coreConfiguration[$name];
             $details['expected_value'] = $expectedValue;
-            $this->data['security'][$name] = $details;
+            $this->data['mainDirectives'][$name] = $details;
         }
     }
 
-
-    public function getErrorsInfo()
+    public function getMainDirectives()
     {
-        return $this->data['errors'];
-    }
-
-    public function getSecurityInfo()
-    {
-        return $this->data['security'];
+        return $this->data['mainDirectives'];
     }
 }
