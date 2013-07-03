@@ -207,6 +207,8 @@ class Module implements
                     }
 
                     if ($adapter instanceof ProfilerAwareInterface || $adapter instanceof BjyAdapter) {
+                        $db->setAdapter($adapter);
+
                         if ($adapter->getProfiler() instanceof BjyProfiler) {
                             $db->setProfiler($adapter->getProfiler());
                         }

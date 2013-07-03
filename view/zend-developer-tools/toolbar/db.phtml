@@ -51,17 +51,17 @@
 
             <span class="zdt-toolbar-info zdt-toolbar-info-heading zdt-toolbar-topspacing zdt-toolbar-dbquery-heading">Query Profiles</span>
             <span class="zdt-toolbar-info zdt-toolbar-dbquery">
-            <?php $profiler = $this->collector->getProfiler(); ?>
-            <?php foreach ($profiler->getQueryProfiles() as $profile): ?>
-                <?php $query = $profile->toArray(); ?>
+            <?php
+            $profiler = $this->collector->getProfiler();
+            foreach ($profiler->getQueryProfiles() as $profile):
+                $query = $profile->toArray();
+                ?>
                 <hr />
                 <span class="zdt-detail-label">SQL</span>
                 <span class="zdt-detail-value zdt-detail-dbquery zdt-detail-dbquery-sql">
-                    <?php /* highlight UPPERCASE words in the query, which should mostly match SQL keywords */ ?>
-                    <?php echo preg_replace('/([A-Z]+)/', '<span class="highlight">$1</span>', $this->escapeHtml($query['sql'])) ?>
-                </span>
-                <span class="clear"></span>
-                <?php
+                    <?php
+                    $sql = $this->escapeHtml($query['sql']);
+
                     if (
                         isset($query['parameters'])
                         && (
@@ -69,28 +69,73 @@
                             || ($query['parameters'] instanceof \Iterator && $query['parameters'] instanceof \Countable)
                         )
                         && count($query['parameters']) > 0
-                    ):
-                ?>
-                    <span class="zdt-detail-label">Params</span>
-                    <span class="zdt-detail-value zdt-detail-dbquery zdt-detail-dbquery-params">
-                        <?php foreach($query['parameters'] as $key => $value): ?>
-                            <?php echo $this->escapeHtml("{$key} => " . var_export($value, true)); ?><br />
-                        <?php endforeach ?>
-                    </span>
-                    <span class="clear"></span>
-                <?php endif ?>
+                    ) {
+
+                        $idxWhere = strpos($sql, 'WHERE');
+
+                        foreach($query['parameters'] as $key => $value) {
+                            $idx = strpos($sql, ' ?', $idxWhere);
+                            $sql = substr_replace($sql, " <span class=\"highlight2\">'$value'</span>", $idx, 2);
+                        }
+                    }
+
+                    /* highlight UPPERCASE words in the query, which should mostly match SQL keywords */
+                    echo preg_replace('/([A-Z]+)/', '<span class="highlight">$1</span>', $sql);
+                    ?>
+                </span>
+                <span class="clear"></span>
+
                 <span class="zdt-detail-label">Time</span>
                 <span class="zdt-detail-value zdt-detail-dbquery zdt-detail-dbquery-time">
                     <?php echo $this->escapeHtml($this->ZendDeveloperToolsTime($query['elapsed'])) ?>
                 </span>
                 <span class="clear"></span>
 
-                <span class="zdt-detail-label">Explain</span>
-                <span class="zdt-detail-value zdt-detail-dbquery zdt-detail-dbquery-time">
-                    <?php echo $this->escapeHtml($this->ZendDeveloperToolsTime($query['elapsed'])) ?>
-                </span>
-                <span class="clear"></span>
-            <?php endforeach; ?>
+                <?php
+                if ($query['type'] === 'SELECT'):
+                    $explain = $collector->getExplain($query['sql']);
+
+                    if ($explain !== null):
+                        ?>
+                        <span class="zdt-detail-label">Explain</span>
+                        <span class="zdt-detail-value zdt-detail-dbexplain">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Select type</th>
+                                        <th>table</th>
+                                        <th>type</th>
+                                        <th>possible keys</th>
+                                        <th>key</th>
+                                        <th>key len</th>
+                                        <th>ref</th>
+                                        <th>rows</th>
+                                        <th>Extra</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($explain as $row): ?>
+                                        <tr>
+                                            <td><?php echo $this->escapeHtml($row['select_type'])?></td>
+                                            <td><?php echo $this->escapeHtml($row['table'])?></td>
+                                            <td><?php echo $this->escapeHtml($row['type'])?></td>
+                                            <td><?php echo $this->escapeHtml($row['possible_keys'])?></td>
+                                            <td><?php echo $this->escapeHtml($row['key'])?></td>
+                                            <td><?php echo $this->escapeHtml($row['key_len'])?></td>
+                                            <td><?php echo $this->escapeHtml($row['ref'])?></td>
+                                            <td><?php echo $this->escapeHtml($row['rows'])?></td>
+                                            <td nowrap="nowrap"><?php echo $this->escapeHtml($row['Extra'])?></td>
+                                        </tr>
+                                    <?php endforeach;?>
+                                </tbody>
+                            </table>
+                        </span>
+                        <span class="clear"></span>
+                        <?php
+                    endif;
+                endif;
+            endforeach;
+            ?>
             </span>
 <?php else: ?>
             <span class="zdt-toolbar-info zdt-toolbar-info-heading">Error</span>
@@ -123,11 +168,32 @@
 
 .zdt-toolbar-entry .zdt-toolbar-detail .zdt-detail-dbquery {
     white-space: normal;
-    width: 400px;
+    width: 450px;
 }
+
+.zdt-toolbar-entry .zdt-toolbar-detail .zdt-detail-dbexplain {
+    white-space: normal;
+    overflow-x: auto;
+    width: 450px;
+}
+
+.zdt-detail-dbexplain table {
+    border: 1px solid white;
+    border-collapse: collapse;
+}
+
+.zdt-detail-dbexplain table td,  .zdt-detail-dbexplain table th {
+    border: 1px solid white;
+}
+
 
 .zdt-toolbar-entry .zdt-toolbar-detail .zdt-detail-dbquery .highlight {
     color: #80DC09;
+    font-weight: bold;
+}
+
+.zdt-toolbar-entry .zdt-toolbar-detail .zdt-detail-dbquery .highlight2 {
+    color: red;
     font-weight: bold;
 }
 

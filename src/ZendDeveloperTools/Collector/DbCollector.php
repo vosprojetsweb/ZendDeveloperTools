@@ -11,6 +11,7 @@ namespace ZendDeveloperTools\Collector;
 
 use Zend\Mvc\MvcEvent;
 use BjyProfiler\Db\Profiler\Profiler;
+use Zend\Db\Adapter\Adapter;
 
 /**
  * Database (Zend\Db) Data Collector.
@@ -22,6 +23,22 @@ class DbCollector implements CollectorInterface, AutoHideInterface, \Serializabl
      * @var Profiler
      */
     protected $profiler;
+
+    /**
+     * @var array
+     */
+    protected $explains;
+
+    /**
+     * @var Adapter
+     */
+    protected $adapter;
+
+
+    public function setAdapter(Adapter $adapter)
+    {
+        $this->adapter = $adapter;
+    }
 
     /**
      * @inheritdoc
@@ -40,11 +57,32 @@ class DbCollector implements CollectorInterface, AutoHideInterface, \Serializabl
     }
 
     /**
+     *
+     * @return \Zend\Db\Adapter\Driver\ResultInterface
+     */
+    public function mysqlExplain($query, $parameters)
+    {
+        $result = $this->adapter->getDriver()->createStatement('EXPLAIN ' . $query)->execute($parameters);
+
+        $explain = array();
+        foreach ($result as $row) {
+            $explain[] = $row;
+        }
+
+        return $explain;
+    }
+
+    /**
      * @inheritdoc
      */
     public function collect(MvcEvent $mvcEvent)
     {
-        return;
+        if ($this->adapter->getDriver()->getDatabasePlatformName() === 'Mysql') {
+            foreach ($this->profiler->getQueryProfiles(Profiler::SELECT) as $profile) {
+                $query = $profile->toArray();
+                $this->explains[md5($query['sql'])] = $this->mysqlExplain($query['sql'], $query['parameters']);
+            }
+        }
     }
 
     /**
@@ -128,19 +166,24 @@ class DbCollector implements CollectorInterface, AutoHideInterface, \Serializabl
         return $time;
     }
 
-    /**
-     * @see \Serializable
-     */
-    public function serialize()
-    {
-        return serialize($this->profiler);
+    public function getExplain($sql) {
+        $key = md5($sql);
+        return (isset($this->explains[$key]) === true) ? $this->explains[$key] : null;
     }
 
     /**
      * @see \Serializable
      */
-    public function unserialize($profiler)
+    public function serialize()
     {
-        $this->profiler = unserialize($profiler);
+        return serialize(array($this->profiler, $this->explains));
+    }
+
+    /**
+     * @see \Serializable
+     */
+    public function unserialize($data)
+    {
+        list($this->profiler, $this->explains) = unserialize($data);
     }
 }
